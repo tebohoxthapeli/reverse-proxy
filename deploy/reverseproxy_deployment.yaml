@@ -1,27 +1,43 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-    labels:
-        service: reverseproxy
-    name: reverseproxy
+	name: reverse-proxy
+	labels:
+		app: reverse-proxy
 spec:
-    replicas: 1
-    template:
-        metadata:
-            labels:
-                service: reverseproxy
-        spec:
-            containers:
-                - image: tebohoxthapeli/reverse-proxy:latest
-                  name: reverseproxy
-                  imagePullPolicy: Always
-                  resources:
-                      requests:
-                          memory: "64Mi"
-                          cpu: "250m"
-                      limits:
-                          memory: "1024Mi"
-                          cpu: "500m"
-                  ports:
-                      - containerPort: 8080
-            restartPolicy: Always
+	replicas: 1
+	selector:
+		matchLabels:
+			app: reverse-proxy
+	template:
+		metadata:
+			labels:
+				app: reverse-proxy
+		spec:
+			containers:
+				- name: reverse-proxy
+					image: tebohoxthapeli/reverse-proxy:latest
+					ports:
+						- containerPort: 8080
+					imagePullPolicy: Always
+					resources:
+						requests:
+							memory: "64Mi"
+							cpu: "250m"
+						limits:
+							memory: "1024Mi"
+							cpu: "500m"
+			restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+	name: reverse-proxy-service
+spec:
+	selector:
+		app: reverse-proxy
+	ports:
+		- protocol: TCP
+			port: 8080
+			targetPort: 8080
+
