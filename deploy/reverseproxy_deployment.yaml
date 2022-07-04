@@ -18,16 +18,7 @@ spec:
                 - name: reverse-proxy
                   image: tebohoxthapeli/reverse-proxy:latest
                   ports:
-                      - containerPort: 8080
-                  imagePullPolicy: Always
-                  resources:
-                      requests:
-                          memory: "64Mi"
-                          cpu: "250m"
-                      limits:
-                          memory: "1024Mi"
-                          cpu: "500m"
-            restartPolicy: Always
+                      - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
@@ -38,5 +29,5 @@ spec:
         app: reverse-proxy
     ports:
         - protocol: TCP
-          port: 8080
-          targetPort: 8080
+          port: 80
+          targetPort: 80
